@@ -1,0 +1,14 @@
+version: "3.9"
+
+services:
+  flask_app:
+    build: .
+    container_name: flask_app
+    ports:
+      - "5000:5000"
+    env_file:
+      - .env
+    environment:
+      - PROBLEMS_JSON_B64=${PROBLEMS_JSON_B64}
+      - JUDGE_URL=${JUDGE_URL}
+      - PORT=${PORT}

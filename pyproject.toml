@@ -1,0 +1,17 @@
+[tool.poetry]
+name = "barradasobijudge"
+version = "0.1.0"
+description = ""
+authors = ["Barradas13 <febarradas13@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+flask = "^3.1.2"
+requests = "^2.32.5"
+beautifulsoup4 = "^4.14.2"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

@@ -1,0 +1,129 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Problema: {{ problema }}</h2>
+<p>Fase {{ fase|upper }} – Ano {{ ano }} – Nível {{ nivel|replace('p', '') }}</p>
+
+<hr>
+
+<h3>Enunciado</h3>
+<iframe 
+    src="{{ pdf_url }}" 
+    width="100%" 
+    height="600px" 
+    style="border: 1px solid #ccc; border-radius: 8px;">
+</iframe>
+
+<div style="margin-top: 12px;">
+  <label for="language">Linguagem:</label>
+  <select id="language" required>
+    <option value="py" selected>Python 3 (.py)</option>
+    <option value="c">C (.c)</option>
+    <option value="cpp">C++ (.cpp)</option>
+    <option value="java">Java (.java)</option>
+    <option value="pas">Pascal (.pas)</option>
+    <option value="js">Javascript (.js)</option>
+  </select>
+</div>
+
+
+<h3>Envie seu código</h3>
+<textarea id="codigo" name="codigo" style="width:100%; height:200px; font-family: monospace;"></textarea>
+
+<div style="margin-top: 15px;">
+    <label>Limite de tempo (segundos):</label>
+    <input type="number" id="limiteTempo" min="1" max="10" value="1" required>
+    <br>
+    <label>Limite de memória (MB):</label>
+    <input type="number" id="limiteMemoria" min="16" max="1024" value="256" required>
+</div>
+
+<div style="margin-top: 15px;">
+    <button onclick="enviarCodigo()" class="btn btn-success">Enviar</button>
+</div>
+
+<div id="results" style="margin-top: 20px;"></div>
+
+<script>
+const zip_url = "{{ zip_url }}";
+const JUDGE0_URL = "{{ JUDGE_URL }}";
+
+const toBase64 = str => btoa(unescape(encodeURIComponent(str)));
+const fromBase64 = str => decodeURIComponent(escape(atob(str)));
+
+const languageIds = {
+  py: 71,
+  c: 50,
+  cpp: 54,
+  java: 62,
+  pas: 67,
+  js: 63
+};
+
+async function enviarCodigo() {
+  const codigo = document.getElementById('codigo').value.trim();
+  const limiteTempo = Number(document.getElementById('limiteTempo').value);
+  const limiteMemoria = Number(document.getElementById('limiteMemoria').value);
+  const linguagem = document.getElementById('language').value;
+
+  if (!linguagem) return alert("Por favor, selecione uma linguagem!");
+  if (!codigo) return alert("Por favor, insira o código!");
+  if (isNaN(limiteTempo) || isNaN(limiteMemoria))
+    return alert("Limites inválidos!");
+
+  const resultsDiv = document.getElementById("results");
+  resultsDiv.innerHTML = `<h3>Baixando casos de teste... ${zip_url}</h3>`;
+
+  const response = await fetch(`/api/get_test_cases/{{ ano }}/{{ fase }}/{{ nivel }}/{{ problema }}`);
+  if (!response.ok) return alert("Erro ao obter casos de teste.");
+
+  const data = await response.json();
+  let passed = 0;
+
+  for (const i in data["files"]) {
+    const input = data["files"][i].input;
+    const expected = data["files"][i].output;
+
+    const payload = {
+      source_code: toBase64(codigo),
+      stdin: toBase64(input),
+      language_id: languageIds[linguagem],
+      base64_encoded: true,
+      wait: true
+    };
+
+    console.log(JUDGE0_URL);
+
+    const res = await fetch(`${JUDGE0_URL}/submissions?base64_encoded=true&wait=true`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
+
+    const result = await res.json();
+    const output = fromBase64(result.stdout || "").trim();
+    const expectedTrimmed = expected.trim();
+
+    let status = "Wrong Answer";
+    if (output === expectedTrimmed) {
+      status = "Accepted";
+      passed++;
+    } else if (result.stderr) status = "Runtime Error";
+    else if (result.compile_output) status = "Compilation Error";
+
+    const caseDiv = document.createElement("div");
+    caseDiv.innerHTML = `
+      <b>Teste ${Number(i) + 1}:</b><br>
+      <i>Status:</i> ${status}<br>
+      <i>Esperado:</i> <pre>${expectedTrimmed}</pre>
+      <i>Obtido:</i> <pre>${output}</pre>
+      <hr>
+    `;
+    resultsDiv.appendChild(caseDiv);
+  }
+
+  resultsDiv.innerHTML += `<h4>${passed}/${data["files"].length} casos aceitos ✅</h4>`;
+}
+</script>
+
+{% endblock %}
