@@ -10,13 +10,10 @@ services:
       - .env
     environment:
       - PROBLEMS_JSON_B64=${PROBLEMS_JSON_B64}
-      - JUDGE_URL=http://judge0:7000
+      - JUDGE_URL=http://judge:7000
       - PORT=${PORT}
-    depends_on:
-      - judge0
-
-  judge0:
+  judge:
     image: judge0/judge0
     container_name: judge0
     ports:
-      - "7000:3000"
+      - "7000:7000"

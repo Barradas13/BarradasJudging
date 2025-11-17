@@ -104,6 +104,9 @@ async function enviarCodigo() {
     const output = fromBase64(result.stdout || "").trim();
     const expectedTrimmed = expected.trim();
 
+    console.log({ output, expected: expectedTrimmed });
+    console.log(result);
+
     let status = "Wrong Answer";
     if (output === expectedTrimmed) {
       status = "Accepted";

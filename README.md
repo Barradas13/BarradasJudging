@@ -1,22 +1,25 @@
+
 # Barradas Judge
 
-A lightweight **open-source online judge** built to provide a local judge with any problems wanted.  
-This project allows students and teachers to **practice programming problems from whichever problem they want to** directly through a simple web interface running locally.
+A lightweight **open-source online judge** designed to provide a fully local environment for testing programming problems from any source.  
+This project allows students and teachers to **practice competitive programming and algorithm problems** through a simple local web interface.
 
 ---
 
 ## Overview
 
-The Barradas Judge automatically organizes problems, PDFs, and gabaritos (answer files) from the json given, providing an independent environment to view statements and test solutions.
+Barradas Judge automatically organizes problem statements, PDFs, and answer files from a provided JSON configuration.  
+It creates an independent, self-contained environment where users can browse problems and test their solutions.
 
+---
 
 ## Features
 
-- Structure problems by **year, phase, and level**  
-- **Search bar** to find problems quickly  
-- Embedded PDF statements  
-- Upload and simulate **code submissions**  
-- Supports the languages:
+- Organized problem structure by **year, phase, and level**  
+- **Search bar** for quick problem lookup  
+- Embedded PDF viewers for statements  
+- Upload and evaluate **code submissions**  
+- Supports multiple languages:
   - C (`.c`)
   - C++ (`.cpp`)
   - Pascal (`.pas`)
@@ -26,29 +29,61 @@ The Barradas Judge automatically organizes problems, PDFs, and gabaritos (answer
 
 ---
 
-## Important informations
+## Important Information
 
-This project is based on 2 things:
+This project relies on two main components:
 
- - The web application that offers an interface with the problems to solve;
- - A server which will receive code, run it and send the outputs.
+1. **The web application**, which displays the problems and handles submissions  
+2. **A judge server**, which compiles and executes the code (Judge0 or any compatible API)
 
-If you want to run it 100% locally you can use the compose example of this repo, it has a judge image which will serve as the server to compile and execute the code.
+### Running fully locally
+You can run the entire system locally using the `docker-compose` example provided in this repository.  
+It includes a Judge0 container that acts as the execution backend.
 
-If you want to run it locally just the web application you need to have a web url for an online judge, for exaple: https://ce.judge0.com/.
+### Running only the web application
+If you want to run only the web interface locally, you must provide a **remote Judge0 API URL**, such as:
 
-Note, you will need to prove a json file with the problems stuctures and pdf, zil urls, these urls need to be fully open to anyone on the internet and they must end with .pdf or .zip, for example you can use a github repository with github pages as you can see in: https://github.com/Barradas13/Exerc-cios1Info.
+```
 
-The Json must be converted to base64 so you can use: ``` base64 -w 0 input.json > base64.txt ``` and then copy the base64.txt and paste on .env.
+[https://ce.judge0.com/](https://ce.judge0.com/)
 
-The Json structure can be seen on ./static/exemplo.json
+````
+
+### Problem JSON file
+You must provide a JSON file that describes the problem list and includes URLs for PDFs and ZIP files.  
+These URLs must:
+
+- Be publicly accessible on the internet  
+- End with `.pdf` or `.zip`  
+- Remain accessible at all times  
+
+For example, you can host your problems on GitHub Pages, as shown here:  
+`https://github.com/Barradas13/Exerc-cios1Info`
+
+#### Converting the JSON to Base64
+The JSON must be encoded in Base64 before being placed in the `.env` file:
+
+```bash
+base64 -w 0 input.json > base64.txt
+````
+
+Then copy the contents of `base64.txt` into your `.env` file.
+
+The JSON structure example is available at:
+
+```
+./static/exemplo.json
+```
+
+---
 
 ## Running Locally (Development)
 
 ### 1. Clone the Repository
+
 ```bash
 git clone https://github.com/barradas13/barradasjudging.git
-````
+```
 
 ### 2. Install Dependencies
 
@@ -58,7 +93,7 @@ Using **Poetry**:
 poetry install
 ```
 
-### 3. Run the Application 
+### 3. Run the Application
 
 ```bash
 poetry run python3 app.py
@@ -71,3 +106,9 @@ http://localhost:5000
 ```
 
 ---
+
+## Docker (Optional)
+
+A ready-to-use `docker-compose.yml` is included for running both the web app and Judge0 locally.
+
+You will just need to adapt the json with the problems you want, at static there is a json with all obi problems, so if you are interested in OBI problems you sure will have some fun!
