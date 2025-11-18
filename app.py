@@ -27,8 +27,7 @@ else:
 JUDGE_URL = os.getenv("JUDGE_URL", "https://judge_0.darlon.com.br")
 PORT = int(os.getenv("PORT", 5000))
 
-JUDGE_URL = os.getenv("JUDGE_URL", "https://judge_0.darlon.com.br")
-PORT = int(os.getenv("PORT", 5000))
+JUDGE_KEY = os.getenv("JUDGE0_KEY", "")
 
 @app.route("/")
 def index():
@@ -42,7 +41,7 @@ def ir_para_problema(ano, fase, nivel, problema):
     return render_template(
         "problems.html",
         ano=ano, fase=fase, nivel=nivel, problema=problema,
-        pdf_url=pdf_url, zip_url=zip_url, JUDGE_URL=JUDGE_URL
+        pdf_url=pdf_url, zip_url=zip_url, JUDGE_URL=JUDGE_URL, JUDGE0_KEY=JUDGE_KEY
     )
 
 def organize_test_files(paths: list[str]) -> list[str]:

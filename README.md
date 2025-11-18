@@ -36,18 +36,11 @@ This project relies on two main components:
 1. **The web application**, which displays the problems and handles submissions  
 2. **A judge server**, which compiles and executes the code (Judge0 or any compatible API)
 
-### Running fully locally
-You can run the entire system locally using the `docker-compose` example provided in this repository.  
-It includes a Judge0 container that acts as the execution backend.
+### Running locally
+You can run the system locally using the `docker-compose` example provided in this repository.  
+It DOES NOT includes a Judge0 container so you must go to: https://rapidapi.com/judge0-official/api/judge0-ce/playground/apiendpoint_489fe32c-7191-4db3-b337-77d0d3932807 login and change the .env variable "JUDGE0_KEY" with the respective KEY you receive on your JUDGE0 API.
 
-### Running only the web application
-If you want to run only the web interface locally, you must provide a **remote Judge0 API URL**, such as:
-
-```
-
-[https://ce.judge0.com/](https://ce.judge0.com/)
-
-````
+There is a .env.template for you to paste and change the informations needed.
 
 ### Problem JSON file
 You must provide a JSON file that describes the problem list and includes URLs for PDFs and ZIP files.  
@@ -106,9 +99,3 @@ http://localhost:5000
 ```
 
 ---
-
-## Docker (Optional)
-
-A ready-to-use `docker-compose.yml` is included for running both the web app and Judge0 locally.
-
-You will just need to adapt the json with the problems you want, at static there is a json with all obi problems, so if you are interested in OBI problems you sure will have some fun!

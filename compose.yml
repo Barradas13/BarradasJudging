@@ -2,7 +2,7 @@ version: "3.9"
 
 services:
   flask_app:
-    build: .
+    image: barradas13/judge
     container_name: flask_app
     ports:
       - "5000:5000"
@@ -11,4 +11,5 @@ services:
     environment:
       - PROBLEMS_JSON_B64=${PROBLEMS_JSON_B64}
       - JUDGE_URL=${JUDGE_URL}
+      - JUDGE0_KEY=${JUDGE0_KEY}
       - PORT=${PORT}

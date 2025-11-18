@@ -47,6 +47,10 @@
 <script>
 const zip_url = "{{ zip_url }}";
 const JUDGE0_URL = "{{ JUDGE_URL }}";
+const JUDGE0_KEY = "{{ JUDGE0_KEY }}";
+
+console.log("JUDGE0_URL:", JUDGE0_URL);
+console.log("JUDGE0_KEY:", JUDGE0_KEY);
 
 const toBase64 = str => btoa(unescape(encodeURIComponent(str)));
 const fromBase64 = str => decodeURIComponent(escape(atob(str)));
@@ -94,11 +98,33 @@ async function enviarCodigo() {
 
     console.log(JUDGE0_URL);
 
+    function buildHeaders({ xRapidHost, xRapidKey }) {
+      const headers = {
+        "Content-Type": "application/json",
+      };
+
+      if (xRapidHost && xRapidKey) {
+        headers["x-rapidapi-host"] = xRapidHost;
+        headers["x-rapidapi-key"] = xRapidKey;
+      }
+
+      return headers;
+    }
+
+    // Uso:
+    const headers = buildHeaders({
+      xRapidHost: `judge0-ce.p.rapidapi.com`,
+      xRapidKey: `${JUDGE0_KEY}`,
+    });
+
+    console.log({ headers });
+
     const res = await fetch(`${JUDGE0_URL}/submissions?base64_encoded=true&wait=true`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload)
+      headers,
+      body: JSON.stringify(payload),
     });
+
 
     const result = await res.json();
     const output = fromBase64(result.stdout || "").trim();
